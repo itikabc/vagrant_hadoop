@@ -1,0 +1,1 @@
+{"rsync":{"vagrant-root":{"type":"rsync","guestpath":"/vagrant","hostpath":"G:/repo/vagrant/vagrant_hadoop/dev/node3","disabled":false,"id":"vagrant-root","mount_options":["dmode=777","fmode=777"],"__vagrantfile":true,"owner":"vagrant","group":"vagrant"}}}

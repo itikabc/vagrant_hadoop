@@ -1,4 +1,6 @@
 Vagrant.configure("2") do |config|
+    # skip vbguest
+    config.vbguest.auto_update = false
     # Guest VM Name, CentOS version for base box, shared folder
     vm_name = 'node1.test014.org'
     vagrant_arg = ARGV[0]

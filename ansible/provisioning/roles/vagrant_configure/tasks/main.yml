@@ -1,5 +1,4 @@
 ---
-
 - name: Vagrant networking; resolve.conf option(check if this works with hadoop)
   lineinfile:
     dest: /etc/resolv.conf
@@ -17,6 +16,16 @@
   with_items:
    - '# The line below aliases the menu command to show the motd.'
    - "alias menu='cat /etc/motd'"
+   - "alias ap='ansible-playbook'"
+- name: add hosts
+  shell: |     
+     echo '{{item.ip}} {{item.fqdn}} {{item.server}}' >> /etc/hosts
+  with_items: 
+    - { ip: "192.168.99.101", server: "node1", fqdn: "node1.test014.org" }
+    - { ip: "192.168.99.102", server: "node2", fqdn: "node2.test014.org" }
+    - { ip: "192.168.99.103", server: "node3", fqdn: "node3.test014.org" }
+    - { ip: "192.168.99.104", server: "db", fqdn: "db.test014.org" }             
+    - { ip: "192.168.99.100", server: "dc1", fqdn: "dc1.test014.org" }   
 
 - name: disable firewalld
   firewalld:
@@ -36,21 +45,39 @@
 
 - name: Disable SELinux
   shell: /usr/bin/sed -i 's/=enforcing/=disabled/g' /etc/selinux/config
-  
+
+
 - name: yum repo
   shell: curl -o  /etc/yum.repos.d/centos.repo https://raw.githubusercontent.com/tso-ansible/ansible-tower/master/centos.repo    
 
-- name: Install wget unzip sshpass
+- name: prepare git2
+  shell: |
+       yum -y install https://donotdeletetfstate.blob.core.windows.net/binary/endpoint-repo-1.7-1.x86_64.rpm
+
+- name: Install git, vim, vind-utils, and etc with yum
   yum: 
     name: 
+      - git
       - vim
+      - bind-utils
+      - zlib-devel
+      - sqlite-devel
+      - bzip2-devel
+      - graphviz-devel
+      - openssl-devel
+      - libffi-devel
+      - libjpeg-turbo-devel
+      - giflib
+      - tmux
+      - libmemcached-devel
       - wget
       - unzip
       - sshpass
     state: present
 
-- name: PasswordAuthentication
-  lineinfile:
-    dest:  /etc/ssh/sshd_config
-    regexp: '^PasswordAuthentication no'
-    line: "PasswordAuthentication yes"
+- name: sshkeygen
+  shell: su - vagrant -c 'ssh-keygen -q -f ~/.ssh/id_rsa -N ""'
+
+- name: StrictHostKeyChecking
+  shell: |
+        su - vagrant -c 'echo "Host *" > ~/.ssh/config;echo "   StrictHostKeyChecking no" >> ~/.ssh/config;echo "   UserKnownHostsFile=/dev/null" >> ~/.ssh/config;chmod 0400 ~/.ssh/config;'   

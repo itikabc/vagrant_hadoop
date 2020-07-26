@@ -39,3 +39,18 @@
   
 - name: yum repo
   shell: curl -o  /etc/yum.repos.d/centos.repo https://raw.githubusercontent.com/tso-ansible/ansible-tower/master/centos.repo    
+
+- name: Install wget unzip sshpass
+  yum: 
+    name: 
+      - vim
+      - wget
+      - unzip
+      - sshpass
+    state: present
+
+- name: PasswordAuthentication
+  lineinfile:
+    dest:  /etc/ssh/sshd_config
+    regexp: '^PasswordAuthentication no'
+    line: "PasswordAuthentication yes"
