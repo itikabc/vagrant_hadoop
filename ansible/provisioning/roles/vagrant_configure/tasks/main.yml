@@ -81,3 +81,6 @@
 - name: StrictHostKeyChecking
   shell: |
         su - vagrant -c 'echo "Host *" > ~/.ssh/config;echo "   StrictHostKeyChecking no" >> ~/.ssh/config;echo "   UserKnownHostsFile=/dev/null" >> ~/.ssh/config;chmod 0400 ~/.ssh/config;'   
+
+- name: remove first line 
+  shell: sed -i '1d' /etc/hosts
