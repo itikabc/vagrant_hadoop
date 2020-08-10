@@ -21,11 +21,11 @@
   shell: |     
      echo '{{item.ip}} {{item.fqdn}} {{item.server}}' >> /etc/hosts
   with_items: 
-    - { ip: "192.168.99.101", server: "node1", fqdn: "node1.test014.org" }
-    - { ip: "192.168.99.102", server: "node2", fqdn: "node2.test014.org" }
-    - { ip: "192.168.99.103", server: "node3", fqdn: "node3.test014.org" }
-    - { ip: "192.168.99.104", server: "db", fqdn: "db.test014.org" }             
-    - { ip: "192.168.99.100", server: "dc1", fqdn: "dc1.test014.org" }   
+    - { ip: "192.168.99.11", server: "hdnode1", fqdn: "hdnode1.test014.org" }
+    - { ip: "192.168.99.12", server: "hdnode2", fqdn: "hdnode2.test014.org" }
+    - { ip: "192.168.99.13", server: "hdnode3", fqdn: "hdnode3.test014.org" }
+    - { ip: "192.168.99.14", server: "db", fqdn: "db.test014.org" }             
+    - { ip: "192.168.99.10", server: "dc1", fqdn: "dc1.test014.org" }   
 
 - name: disable firewalld
   firewalld:
@@ -81,6 +81,12 @@
 - name: StrictHostKeyChecking
   shell: |
         su - vagrant -c 'echo "Host *" > ~/.ssh/config;echo "   StrictHostKeyChecking no" >> ~/.ssh/config;echo "   UserKnownHostsFile=/dev/null" >> ~/.ssh/config;chmod 0400 ~/.ssh/config;'   
+
+- name: PasswordAuthentication
+  lineinfile:
+    dest:  /etc/ssh/sshd_config
+    regexp: '^PasswordAuthentication no'
+    line: "PasswordAuthentication yes"
 
 - name: remove first line 
   shell: sed -i '1d' /etc/hosts
